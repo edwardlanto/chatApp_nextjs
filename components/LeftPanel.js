@@ -7,6 +7,7 @@ const LeftPanel = ({ sender, onSignOut }) => (
         <img
           className="rounded-full"
           src="https://peterbe.com/avatar.random.png"
+          alt="Avatar"
         />
       </div>
       <p className="text-purple-500">
@@ -23,7 +24,7 @@ const LeftPanel = ({ sender, onSignOut }) => (
     </div>
 
     <div className="mt-10">
-      <h2 className="text-green-600">You're online.</h2>
+      <h2 className="text-green-600">You&quot;re online.</h2>
     </div>
   </>
 );
