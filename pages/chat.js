@@ -1,61 +1,106 @@
 import { useEffect, useState } from "react";
 import Pusher from "pusher-js";
+import SendMessage from "../components/SendMessage";
 import axios from "axios";
+import ChatList from "../components/ChatList";
+import LeftPanel from "../components/LeftPanel";
+import Notifications from "../components/Notifications";
+import { useRouter } from "next/router";
 
-const Chat = ({ sender }) => {
+const Chat = ({ username, userLocation }) => {
+  const router = useRouter();
+  const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
+    cluster: "us3",
+    authEndpoint: `api/pusher/auth`,
+    auth: { params: { 
+      username, userLocation 
+    }}
+  });
+
   const [chats, setChats] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
+  const [onlineUsersCount, setOnlineUsersCount] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [usersRemoved, setUsersRemoved] = useState([]);
 
   useEffect(() => {
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
-      cluster: "eu",
+    const channel = pusher.subscribe("presence-channel"); 
+    channel.bind("pusher:subscription_succeeded", (members) => {
+      setOnlineUsersCount(members.count);
     });
 
-    const channel = pusher.subscribe("chat");
+    channel.bind("pusher:member_added", (member) => {
+      setOnlineUsersCount(channel.members.count);
+      setOnlineUsers((prevState) => [
+        ...prevState,
+        { username: member.info.username, userLocation: member.info.userLocation },
+      ]);
+    });
 
-    channel.bind("chat-event", function (data) {
+    channel.bind("pusher:member_removed", (member) => {
+      setOnlineUsersCount(channel.members.count);
+      setUsersRemoved((prevState) => [...prevState, member.info.username]);
+    });
+
+    channel.bind("chat-update", function (data) {
+      const {username, message} = data
       setChats((prevState) => [
         ...prevState,
-        { sender: data.sender, message: data.message },
+        { username, message },
       ]);
     });
 
     return () => {
-      pusher.unsubscribe("chat");
+      pusher.unsubscribe("presence-channel");
     };
   }, []);
 
+  const handleSignOut = () => {
+    pusher.unsubscribe("presence-channel");
+    router.push("/");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("/api/pusher", { message: messageToSend, sender });
+    await axios.post("/api/pusher/chat-update", {
+      message: messageToSend,
+      username
+    });
   };
 
   return (
-    <>
-           <p>Hello, {sender}</p>
-            <div>
+    <div className="m-auto max-w-full h-screen bg-purple-500 shadow-lg">
+      <div className="max-w-4xl m-auto pt-20">
+        <div className="grid grid-cols-3 bg-white px-10 py-10 rounded-lg">
+          <div className="col-span-1 mr-5 ">
+            <LeftPanel sender={username} onSignOut={handleSignOut} />
+            <Notifications
+              onlineUsersCount={onlineUsersCount}
+              onlineUsers={onlineUsers}
+              usersRemoved={usersRemoved}
+            />
+          </div>
+
+          <div className="col-span-2 flex flex-col bg-purple-50 rounded-lg px-5 py-5">
+            <div className="flex-1">
               {chats.map((chat, id) => (
-                  <>
-                    <p>{chat.message}</p>
-                    <small>{chat.sender}</small>
-                  </>
+                <ChatList key={id} chat={chat} currentUser={username} />
               ))}
             </div>
 
-                <form onSubmit={(e) => {handleSubmit(e)}}>
-                 <input
-                  type="text"
-                 value={messageToSend}
-                  onChange={(e) => setMessageToSend(e.target.value)}
-                    placeholder="start typing...."
-                />
-      <button
-        type="submit"
-      >
-        Send
-      </button>
-    </form>
-    </>
+            <div className="pt-20">
+              <SendMessage
+                message={messageToSend}
+                handleMessageChange={(e) => setMessageToSend(e.target.value)}
+                handleSubmit={(e) => {
+                  handleSubmit(e);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
