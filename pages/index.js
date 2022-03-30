@@ -2,29 +2,19 @@ import Button from "../components/Button";
 
 export default function Login({ handleLogin, handleLoginChange }) {
   return (
-    <div className="flex m-auto items-center justify-center flex-col h-screen bg-purple-500">
-      <div className="mb-5">
-      <h1 className="text-5xl text-white m-auto">Chat</h1>
-      <p className="text-gray-200">your chats, your way</p>
+<div class="w-full min-h-screen bg-gray-50 flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+  <div class="w-full sm:max-w-md p-5 mx-auto">
+    <h2 class="mb-12 text-center text-5xl font-extrabold">Welcome.</h2>
+    <form   onSubmit={handleLogin}>
+      <div class="mb-4">
+        <label class="block mb-1" for="username">Username</label>
+        <input id="username"  onChange={handleLoginChange} type="text" name="username" class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
       </div>
-      
-      <form
-        onSubmit={handleLogin}
-        className="px-3 py-20 rounded-md w-full max-w-2xl bg-white"
-      >
-        <p className="text-purple-900 text-center mb-4">
-          Enter your name to start:
-        </p>
-        <div className="max-w-md m-auto flex flex-col justify-center items-center">
-          <input
-            type="text"
-            onChange={handleLoginChange}
-            className="border border-1 border-purple-900 rounded-md px-2 py-2 focus:ring-1 focus:ring-purple-500 w-full"
-            placeholder="your name"
-          />
-          <Button text="Sign in to get started" />
-        </div>
-      </form>
-    </div>
+      <div class="mt-6">
+        <button class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0 w-full">Sign In</button>
+      </div>
+    </form>
+  </div>
+</div>
   );
 }

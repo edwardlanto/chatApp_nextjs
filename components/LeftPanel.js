@@ -1,29 +1,27 @@
-import Link from "next/link";
-
 const LeftPanel = ({ sender, onSignOut }) => (
   <>
-    <div className="bg-purple-100 shadow-md h-64 flex flex-col justify-center items-center rounded-md">
-      <div className="h-24 w-24 mb-3">
+    <div className="flex flex-col justify-center items-center rounded-md">
+      <div className="mb-3">
         <img
           className="rounded-full"
           src="https://peterbe.com/avatar.random.png"
           alt="Avatar"
         />
       </div>
-      <p className="text-purple-500">
+      <p className="text-sm font-semibold mt-2">
         Hello, <span className="font-semibold">{sender}</span>
       </p>
       <div className="mt-4">
         <button
           onClick={onSignOut}
-          className="text-white bg-purple-500 px-5 text-xs py-3 rounded-md w-full"
+          className="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-1 flex-shrink-0"
         >
           Sign out
         </button>
       </div>
     </div>
 
-    <div className="mt-10">
+    <div className="mt-3">
       <h2 className="text-green-600">You&quot;re online.</h2>
     </div>
   </>

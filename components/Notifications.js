@@ -3,29 +3,31 @@ const Notifications = ({ onlineUsers, onlineUsersCount, usersRemoved }) => {
     <>
       <div>{onlineUsersCount} user(s) online now</div>
 
-      <h2 className="text-purple-500 shadow-sm mt-3 bg-purple-50 py-2 px-2 rounded-sm font-medium">
+      <h2 className="font-bold mb-3">
         Notifications
       </h2>
-      <div className="bg-purple-50 rounded-sm pb-2 px-2">
-        {/* show online users */}
-        {onlineUsers.map((user, id) => (
-          <div key={id}>
-          <small className="leading-tight">
-            {" "}
-            <span className="text-purple-500">{user.username}</span> just joined
-            the chat from {user.userLocation}!
-          </small>
-          </div>
-        ))}
+      {onlineUsers.length ?
+        <div className="bg-purple-50 rounded-sm pb-2 px-2">
+          {onlineUsers.map((user, id) => (
+            <div key={id}>
+              <small className="leading-tight">
+                {" "}
+                <span className="text-indigo-500">{user.username}</span> just joined
+                the chat from {user.userLocation}!
+              </small>
+            </div>
+          ))}
 
-        {/* show users leaving the chat */}
-        {usersRemoved.map((user, id) => (
-          <small key={id}>
-            {" "}
-            <span className="text-purple-500">{user}</span> just left the chat!
-          </small>
-        ))}
-      </div>
+
+          {/* show users leaving the chat */}
+          {usersRemoved.map((user, id) => (
+            <small key={id}>
+              {" "}
+              <span className="text-indigo-500">{user}</span> just left the chat!
+            </small>
+          ))}
+        </div>
+        : ""}
     </>
   );
 };

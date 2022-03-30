@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Pusher from "pusher-js";
 import SendMessage from "../components/SendMessage";
-import axios from "axios";
 import ChatList from "../components/ChatList";
 import LeftPanel from "../components/LeftPanel";
 import Notifications from "../components/Notifications";
@@ -12,19 +11,24 @@ const Chat = ({ username, userLocation }) => {
   const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
     cluster: "us3",
     authEndpoint: `api/pusher/auth`,
-    auth: { params: { 
-      username, userLocation 
-    }}
+    auth: {
+      params: {
+        username, userLocation
+      }
+    }
   });
 
   const [chats, setChats] = useState([]);
-  const [messageToSend, setMessageToSend] = useState("");
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
   useEffect(() => {
-    const channel = pusher.subscribe("presence-channel"); 
+    if(!localStorage.getItem('chatAppUser')){
+      router.push('/')
+    }
+
+    const channel = pusher.subscribe("presence-channel");
     channel.bind("pusher:subscription_succeeded", (members) => {
       setOnlineUsersCount(members.count);
     });
@@ -43,7 +47,7 @@ const Chat = ({ username, userLocation }) => {
     });
 
     channel.bind("chat-update", function (data) {
-      const {username, message} = data
+      const { username, message } = data
       setChats((prevState) => [
         ...prevState,
         { username, message },
@@ -57,23 +61,20 @@ const Chat = ({ username, userLocation }) => {
 
   const handleSignOut = () => {
     pusher.unsubscribe("presence-channel");
+    localStorage.removeItem('chatAppUser');
     router.push("/");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post("/api/pusher/chat-update", {
-      message: messageToSend,
-      username
-    });
-  };
-
   return (
-    <div className="m-auto max-w-full h-screen bg-purple-500 shadow-lg">
-      <div className="max-w-4xl m-auto pt-20">
-        <div className="grid grid-cols-3 bg-white px-10 py-10 rounded-lg">
-          <div className="col-span-1 mr-5 ">
-            <LeftPanel sender={username} onSignOut={handleSignOut} />
+    <div class="flex h-screen antialiased text-gray-800">
+      <div class="xs:flex-col md:flex sm:flex-row h-full w-full overflow-x-hidden">
+        <div class="xs:w-full flex flex-col py-8 pl-6 pr-2 md:w-64 bg-white flex-shrink-0 ">
+          <div class="flex flex-row items-center justify-center h-12 w-full">
+            <div class="ml-2 font-bold text-2xl">Chat App</div>
+          </div>
+          <div
+            class="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg"
+          >   <LeftPanel sender={username} onSignOut={handleSignOut} />
             <Notifications
               onlineUsersCount={onlineUsersCount}
               onlineUsers={onlineUsers}
@@ -81,20 +82,26 @@ const Chat = ({ username, userLocation }) => {
             />
           </div>
 
-          <div className="col-span-2 flex flex-col bg-purple-50 rounded-lg px-5 py-5">
-            <div className="flex-1">
-              {chats.map((chat, id) => (
-                <ChatList key={id} chat={chat} currentUser={username} />
-              ))}
+        </div>
+        <div class="xs:h-5 md:h-full flex flex-col flex-auto p-6">
+          <div
+            class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4"
+          >
+            <div class="flex flex-col h-full overflow-x-auto mb-4">
+              <div class="flex flex-col h-full">
+                <div class="grid grid-cols-12 gap-y-2">
+                  {chats.map((chat, id) => (
+                    <ChatList key={id} chat={chat} currentUser={username} />
+                  ))}
+                </div>
+              </div>
             </div>
+            <div
+              class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4"
+            >
 
-            <div className="pt-20">
               <SendMessage
-                message={messageToSend}
-                handleMessageChange={(e) => setMessageToSend(e.target.value)}
-                handleSubmit={(e) => {
-                  handleSubmit(e);
-                }}
+                username={username}
               />
             </div>
           </div>

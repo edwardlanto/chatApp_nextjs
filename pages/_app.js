@@ -8,44 +8,23 @@ function MyApp({ Component, pageProps }) {
   const [username, setUsername] = useState("");
   const [userLocation, setUserLocation] = useState("");
   const router = useRouter();
-
   const handleLogin = (e) => {
+    localStorage.setItem('chatAppUser', username);
     e.preventDefault();
     router.push("/chat");
   };
 
   useEffect(() => {
-    getUserLocation();
-    return () => {};
-  }, []);
-
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(trackPosition);
-    } else {
-      alert("geolocation is not supported in your browser.");
+    if(localStorage.getItem('chatAppUser')){
+      setUsername(localStorage.getItem('chatAppUser'));
+      router.push("/chat")
     }
-  };
-
-  const trackPosition = async (position) => {
-    const { latitude, longitude } = position.coords;
-
-    try {
-      const res = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&result_type=administrative_area_level_1&key=${process.env.NEXT_PUBLIC_G_KEY}`
-      );
-      setUserLocation(res.data.results[0].formatted_address);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  }, [])
 
 
   return (
     <>
       <Head>
-        <title>Pusher - Presence Channels API Demo</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
     <Component
