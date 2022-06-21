@@ -7,7 +7,7 @@ export default function Login({ handleLogin, handleLoginChange }) {
     <h2 className="mb-12 text-center text-5xl font-extrabold">Welcome.</h2>
     <form   onSubmit={handleLogin}>
       <div className="mb-4">
-        <label className="block mb-1" for="username">Username</label>
+        <label className="block mb-1" htmlFor="username">Username</label>
         <input id="username"  onChange={handleLoginChange} type="text" name="username" className="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
       </div>
       <div className="mt-6">
