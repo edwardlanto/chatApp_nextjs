@@ -66,14 +66,14 @@ const Chat = ({ username, userLocation }) => {
   };
 
   return (
-    <div class="flex h-screen antialiased text-gray-800">
-      <div class="xs:flex-col md:flex sm:flex-row h-full w-full overflow-x-hidden">
-        <div class="xs:w-full flex flex-col py-8 pl-6 pr-2 md:w-64 bg-white flex-shrink-0 ">
-          <div class="flex flex-row items-center justify-center h-12 w-full">
-            <div class="ml-2 font-bold text-2xl">Chat App</div>
+    <div className="flex h-screen antialiased text-gray-800">
+      <div className="xs:flex-col md:flex sm:flex-row h-full w-full overflow-x-hidden">
+        <div className="xs:w-full flex flex-col py-8 pl-6 pr-2 md:w-64 bg-white flex-shrink-0 ">
+          <div className="flex flex-row items-center justify-center h-12 w-full">
+            <div className="ml-2 font-bold text-2xl">Chat App</div>
           </div>
           <div
-            class="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg"
+            className="flex flex-col items-center bg-indigo-100 border border-gray-200 mt-4 w-full py-6 px-4 rounded-lg"
           >   <LeftPanel sender={username} onSignOut={handleSignOut} />
             <Notifications
               onlineUsersCount={onlineUsersCount}
@@ -83,13 +83,13 @@ const Chat = ({ username, userLocation }) => {
           </div>
 
         </div>
-        <div class="xs:h-5 md:h-full flex flex-col flex-auto p-6">
+        <div className="xs:h-5 md:h-full flex flex-col flex-auto p-6">
           <div
-            class="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4"
+            className="flex flex-col flex-auto flex-shrink-0 rounded-2xl bg-gray-100 h-full p-4"
           >
-            <div class="flex flex-col h-full overflow-x-auto mb-4">
-              <div class="flex flex-col h-full">
-                <div class="grid grid-cols-12 gap-y-2">
+            <div className="flex flex-col h-full overflow-x-auto mb-4">
+              <div className="flex flex-col h-full">
+                <div className="grid grid-cols-12 gap-y-2">
                   {chats.map((chat, id) => (
                     <ChatList key={id} chat={chat} currentUser={username} />
                   ))}
@@ -97,7 +97,7 @@ const Chat = ({ username, userLocation }) => {
               </div>
             </div>
             <div
-              class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4"
+              className="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4"
             >
 
               <SendMessage
