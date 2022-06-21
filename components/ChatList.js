@@ -1,12 +1,6 @@
 const ChatList = ({ chat, currentUser }) => {
   const flexClasses =
     chat.username !== currentUser ? "col-start-1 col-end-8 p-3 rounded-lg" : "col-start-6 col-end-13 p-3 rounded-lg flex justify-end";
-
-  const chatBgClasses =
-    chat.username === currentUser
-      ? "bg-gray-900 text-white "
-      
-      : "bg-purple-200 w-full text-gray-700";
   const letter = localStorage.getItem('chatAppUser').charAt(0);
   return (
     <div className={flexClasses}>
